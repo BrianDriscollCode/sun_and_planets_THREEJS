@@ -3,17 +3,18 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from "lil-gui";
 import gsap from "gsap";
+import { Material } from 'three';
 
 
 //Debug
-const gui = new dat.GUI();
+//const gui = new dat.GUI();
 
 //Buttons
 const seeEarthButton = document.getElementById("seeEarth");
 const seeMarsButton = document.getElementById("seeMars");
 const seeJupiterButton = document.getElementById("seeJupiter");
 
-let earthActive = false;
+let earthActive = true;
 let marsActive = false;
 let jupiterActive = false;
 
@@ -109,18 +110,18 @@ const scene = new THREE.Scene()
   * Texture Loader 
   */
  
- const textureLoader = new THREE.TextureLoader();
- const earthTexture = textureLoader.load("/textures/Earth_Texture.jpg");
- const sunTexture = textureLoader.load("/textures/Sun_Texture.jpg");
- const marsTexture = textureLoader.load("/textures/Mars_Texture.jpg");
- const jupiterTexture = textureLoader.load("/textures/Jupiter_Texture.jpg")
- const starsTexture = textureLoader.load("/textures/Milky_Way_Texture.jpg");
+const textureLoader = new THREE.TextureLoader();
+const earthTexture = textureLoader.load("/textures/Earth_Texture.jpg");
+const sunTexture = textureLoader.load("/textures/Sun_Texture.jpg");
+const marsTexture = textureLoader.load("/textures/Mars_Texture.jpg");
+const jupiterTexture = textureLoader.load("/textures/Jupiter_Texture.jpg")
+const starsTexture = textureLoader.load("/textures/Milky_Way_Texture.jpg");
+const moonTexture = textureLoader.load("/textures/Moon_Texture.jpg");
 
- earthTexture.generateMipmaps = false;
- earthTexture.magFilter = THREE.NearestFilter;
+earthTexture.generateMipmaps = false;
+earthTexture.magFilter = THREE.NearestFilter;
 
-
- starsTexture.generateMipmaps = true;
+starsTexture.generateMipmaps = true;
 
 
 //Material
@@ -129,7 +130,7 @@ const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture });
 const jupiterMaterial = new THREE.MeshLambertMaterial({map: jupiterTexture});
 const planeMaterial = new THREE.MeshBasicMaterial({map: starsTexture})
 const marsMaterial = new THREE.MeshLambertMaterial({map: marsTexture})
-
+const moonMaterial = new THREE.MeshLambertMaterial({ map: moonTexture})
 
 /**
  * Object
@@ -140,6 +141,16 @@ const earth = new THREE.Mesh(
     earthMaterial
 )
 scene.add(earth);
+
+const moon = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(0.5, 32, 32),
+    moonMaterial
+)
+const moonObj = new THREE.Object3D();
+moon.position.x -= 1
+moon.scale.set(0.25, 0.25, 0.25)
+moonObj.add(moon);
+scene.add(moonObj)
 
 const mars = new THREE.Mesh(
     new THREE.SphereBufferGeometry(0.5, 32, 32),
@@ -179,21 +190,21 @@ stars.position.z -= 200;
 stars.position.x -= 900
 stars.rotation.y = 1;
 
-gui
-    .add(stars.scale, "x")
-    .name("scale stars x")
+// gui
+//     .add(stars.scale, "x")
+//     .name("scale stars x")
 
-gui 
-    .add(stars.scale, "y")
-    .name("scale stars y")
+// gui 
+//     .add(stars.scale, "y")
+//     .name("scale stars y")
 
-gui 
-    .add(stars.position, "x")
-    .name("stars position x")
+// gui 
+//     .add(stars.position, "x")
+//     .name("stars position x")
 
-gui
-    .add(stars.position, "y")
-    .name("stars position y")
+// gui
+//     .add(stars.position, "y")
+//     .name("stars position y")
     
 
 
@@ -212,17 +223,17 @@ scene.add(ambientLight)
 const spotLight = new THREE.SpotLight("white", 1);
 spotLight.position.set(2300, 0, -1800)
 
-gui
-    .add(spotLight.position, "x")
-    .name("spotlight x")
+// gui
+//     .add(spotLight.position, "x")
+//     .name("spotlight x")
 
-gui
-    .add(spotLight.position, "y")
-    .name("spotlight y")
+// gui
+//     .add(spotLight.position, "y")
+//     .name("spotlight y")
     
-gui
-    .add(spotLight.position, "z")
-    .name("spotlight z")
+// gui
+//     .add(spotLight.position, "z")
+//     .name("spotlight z")
 
 //const spotLightHelper = new THREE.SpotLightHelper(spotLight, 5)
 scene.add(spotLight)
@@ -314,9 +325,9 @@ scene.add(camera)
      sound.setLoop( true );
      sound.setVolume( 0.2 );
      sound.play();
+     sound.autoplay = true;
  });
 
- sound.autoplay = true;
 
  const clickSound = new THREE.Audio(listener);
  audioLoader.load( 'sound/click.wav', function( buffer ) {
@@ -333,44 +344,44 @@ audioLoader.load( 'sound/whoosh_mixdown.mp3', function( buffer ) {
 });
 
 //control camera
-gui
-    .add(camera.position, "x")
-    .min(0.01)
-    .max(100)
-    .name("x position")
+// gui
+//     .add(camera.position, "x")
+//     .min(0.01)
+//     .max(100)
+//     .name("x position")
 
-gui
-    .add(camera.position, "y")
-    .min(0.01)
-    .max(100)
-    .name("y position")
+// gui
+//     .add(camera.position, "y")
+//     .min(0.01)
+//     .max(100)
+//     .name("y position")
 
-gui
-    .add(camera.position, "z")
-    .min(0.01)
-    .max(100)
-    .name("z position")
+// gui
+//     .add(camera.position, "z")
+//     .min(0.01)
+//     .max(100)
+//     .name("z position")
 
-gui
-    .add(camera.rotation, "x")
-    .min(-5)
-    .max(5)
-    .name("x rotation")
+// gui
+//     .add(camera.rotation, "x")
+//     .min(-5)
+//     .max(5)
+//     .name("x rotation")
 
-gui
-    .add(camera.rotation, "y")
-    .min(-5)
-    .max(5)
-    .name("y rotation")
+// gui
+//     .add(camera.rotation, "y")
+//     .min(-5)
+//     .max(5)
+//     .name("y rotation")
 
-gui
-    .add(camera.rotation, "z")
-    .min(-5)
-    .max(5)
-    .name("z rotation")
+// gui
+//     .add(camera.rotation, "z")
+//     .min(-5)
+//     .max(5)
+//     .name("z rotation")
 
 
-// Controls
+//Controls
 // const controls = new OrbitControls(camera, canvas)
 // controls.enableDamping = true
 
@@ -388,23 +399,48 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 const clock = new THREE.Clock()
 
+let positive = true;
+
 const tick = () =>
 {
+
+    //music
     const elapsedTime = clock.getElapsedTime()
 
     // Update controls
-    //controls.update()
+    // controls.update()
 
     //rotate 
     earth.rotation.y += 0.0025
     mars.rotation.y += 0.0027
     jupiter.rotation.y += 0.0005
+    moonObj.rotation.y += 0.0015;
+    moonObj.rotation.x += 0.00003;
 
     //displaceTexture
-    sunTexture.offset.x = Math.sin(0.001)
-    sunTexture.offset.y += 0.00003
-    sunTexture.repeat.x += 0.00003
-   
+    //sunTexture.offset.x = (Math.cos(elapsedTime)) / 700
+    // if (sunTexture.offset > -0.15) {
+    //     sunTexture.offset.y += elapsedTime / 1000;
+    // } else {
+    //     sunTexture.offset.y -= elapsedTime / 1000;
+    // }
+
+    if (sunTexture.offset.y > 0.008) 
+    {
+        positive = false
+    } 
+    else if (sunTexture.offset.y < -0.008) 
+    {
+        positive = true;
+    }
+
+    positive ? 
+        sunTexture.offset.y += 0.00001:
+        sunTexture.offset.y -= 0.00001;
+    
+
+
+    sun.scale.y += Math.cos(elapsedTime) / 1000
 
     // Render
     renderer.render(scene, camera)
