@@ -1,0 +1,56 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body
+{
+    overflow: hidden;
+}
+
+.elements {
+
+    position: absolute;
+    z-index: 5;
+    color: white;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+
+}
+
+.elements button {
+
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-left: 2em;
+    background-color: transparent;
+    border: none;
+    border: 1px solid white;
+    color: white;
+    border-radius: 2px;
+
+}
+
+.elements button:hover {
+
+    background-color: rgb(163, 202, 255);
+
+}
+
+.webgl
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+    z-index: 1;
+}
+
+
+/*# sourceMappingURL=main.css.map*/
