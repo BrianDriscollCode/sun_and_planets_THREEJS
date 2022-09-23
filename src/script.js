@@ -141,6 +141,7 @@ const earth = new THREE.Mesh(
     earthMaterial
 )
 scene.add(earth);
+earth.name = "Earth";
 
 const moon = new THREE.Mesh(
     new THREE.SphereBufferGeometry(0.5, 32, 32),
@@ -151,6 +152,7 @@ moon.position.x -= 1
 moon.scale.set(0.25, 0.25, 0.25)
 moonObj.add(moon);
 scene.add(moonObj)
+moon.name = "Moon";
 
 const mars = new THREE.Mesh(
     new THREE.SphereBufferGeometry(0.5, 32, 32),
@@ -159,6 +161,7 @@ const mars = new THREE.Mesh(
 scene.add(mars)
 mars.scale.set(0.7, 0.7, 0.7)
 mars.position.z += 14;
+mars.name = "Mars"
 
 
 const jupiter = new THREE.Mesh(
@@ -168,6 +171,7 @@ const jupiter = new THREE.Mesh(
 scene.add(jupiter)
 jupiter.scale.set(15, 15, 15)
 jupiter.position.z += 30;
+jupiter.name = "Jupiter"
 
 
 const sun = new THREE.Mesh(
@@ -178,7 +182,7 @@ scene.add(sun)
 sun.scale.set(65, 65, 65)
 sun.position.z -= 65
 sun.position.x -= 5;
-
+sun.name = "Sun";
 
 const stars = new THREE.Mesh(
     new THREE.PlaneGeometry(100,100),
@@ -189,6 +193,7 @@ stars.scale.set(30,14)
 stars.position.z -= 200;
 stars.position.x -= 900
 stars.rotation.y = 1;
+stars.name = "Stars"
 
 // gui
 //     .add(stars.scale, "x")
@@ -261,7 +266,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000)
-    camera.position.x = 0.95;
+    camera.position.x = 1.15884;
     camera.position.y = 0;
     camera.position.z = 0.54045;
     camera.rotation.x = 0;
@@ -373,12 +378,28 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  
  }
 
-/**
+ /**
+  * info container
+  */
+
+const info_container = document.querySelector(".info_container");
+info_container.style.opacity = 0;
+
+const planet_name = document.querySelector(".planet_name")
+const planet_explanation = document.querySelector(".planet_explanation")
+
+
+ /**
  * Animate
  */
 const clock = new THREE.Clock()
 
 let positive = true;
+
+
+/********************************************* */
+/********************************************* */
+/************** TICK LOOP  *********************/
 
 const tick = () =>
 {
@@ -388,11 +409,17 @@ const tick = () =>
 	
     raycaster.setFromCamera( pointer, camera );
 
-    const allObjects = [sun, earth, jupiter, moon, mars];
+    const allObjects = [earth, jupiter, moon, mars, sun, stars];
 
     for (const object of allObjects) {
 
-        object.material.color.set( 0xffffff, 1 )
+     
+        if (object.name !== "Stars") {
+            object.material.color.set( 0xffffff, 1 )
+        }
+            
+        
+        
 
     }
 	// calculate objects intersecting the picking ray
@@ -400,7 +427,52 @@ const tick = () =>
 
 	for (const intersect of intersects ) {
 
-		intersect.object.material.color.set( "#b3ecff" );
+        if (intersects.length > 1) {
+
+            intersects[0].object.material.color.set( "#b3ecff" );
+
+            if (intersects[0].object.name === "Moon") 
+            {
+                info_container.style.opacity = 1
+                planet_name.innerHTML = "Moon"
+                planet_explanation.innerHTML = "The one and only moon of Earth. Some say it looks like a face!"
+            } 
+            else if (intersects[0].object.name === "Earth")  
+            {
+                info_container.style.opacity = 1
+                planet_name.innerHTML = "Earth"
+                planet_explanation.innerHTML = "The the home of the humans. A diverse place with much life."
+            }
+            else if (intersects[0].object.name === "Sun")  
+            {
+                info_container.style.opacity = 1
+                planet_name.innerHTML = "Sun"
+                planet_explanation.innerHTML = "Also called SOL, a star in its mid-life."
+            }
+            else if (intersects[0].object.name === "Jupiter")  
+            {
+                info_container.style.opacity = 1
+                planet_name.innerHTML = "Jupiter"
+                planet_explanation.innerHTML = "A gas giant with huge levels of gravity. Protects inner planets from asteroids."
+            }
+            else if (intersects[0].object.name === "Mars")  
+            {
+                info_container.style.opacity = 1
+                planet_name.innerHTML = "Mars"
+                planet_explanation.innerHTML = "A cold and desolate planet. Some say it maybe humanity's next home."
+            }
+            else 
+            {
+                info_container.style.opacity = 0;
+            }
+
+            intersect.object.material.color.set( "#b3ecff" );
+
+        }   else {
+            info_container.style.opacity = 0;
+        }
+
+        console.log(intersect.object.name)
 
 	}
 
