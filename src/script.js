@@ -206,19 +206,12 @@ stars.rotation.y = 1;
 //     .add(stars.position, "y")
 //     .name("stars position y")
     
-
-
-
 /**
  * light
  */
 
 const ambientLight = new THREE.AmbientLight( 0x404040, 0.5 )
 scene.add(ambientLight)
-
-// const pointLight = new THREE.PointLight( 'white', 1, 100)
-// pointLight.position.set(10, 10, 10)
-// scene.add(pointLight)
 
 const spotLight = new THREE.SpotLight("white", 1);
 spotLight.position.set(2300, 0, -1800)
@@ -235,9 +228,7 @@ spotLight.position.set(2300, 0, -1800)
 //     .add(spotLight.position, "z")
 //     .name("spotlight z")
 
-//const spotLightHelper = new THREE.SpotLightHelper(spotLight, 5)
 scene.add(spotLight)
-//scene.add(spotLightHelper)
 
 spotLight.position.y += 5
 spotLight.rotateX(-3)
@@ -264,43 +255,13 @@ window.addEventListener('resize', () =>
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-/**
- * Fullscreen
- */
-// window.addEventListener('dblclick', () =>
-// {
-//     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
-
-//     if(!fullscreenElement)
-//     {
-//         if(canvas.requestFullscreen)
-//         {
-//             canvas.requestFullscreen()
-//         }
-//         else if(canvas.webkitRequestFullscreen)
-//         {
-//             canvas.webkitRequestFullscreen()
-//         }
-//     }
-//     else
-//     {
-//         if(document.exitFullscreen)
-//         {
-//             document.exitFullscreen()
-//         }
-//         else if(document.webkitExitFullscreen)
-//         {
-//             document.webkitExitFullscreen()
-//         }
-//     }
-// })
 
 /**
  * Camera
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000)
-    camera.position.x = 1.15884;
+    camera.position.x = 0.95;
     camera.position.y = 0;
     camera.position.z = 0.54045;
     camera.rotation.x = 0;
@@ -395,6 +356,24 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
+ * raycast
+ */
+
+ const raycaster = new THREE.Raycaster();
+ raycaster.set((30,30,30),(30,30,30))
+ const pointer = new THREE.Vector2();
+ 
+ function onPointerMove( event ) {
+ 
+     // calculate pointer position in normalized device coordinates
+     // (-1 to +1) for both components
+ 
+     pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+     pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+ 
+ }
+
+/**
  * Animate
  */
 const clock = new THREE.Clock()
@@ -404,7 +383,29 @@ let positive = true;
 const tick = () =>
 {
 
-    //music
+    //raycast
+    // update the picking ray with the camera and pointer position
+	
+    raycaster.setFromCamera( pointer, camera );
+
+    const allObjects = [sun, earth, jupiter, moon, mars];
+
+    for (const object of allObjects) {
+
+        object.material.color.set( 0xffffff, 1 )
+
+    }
+	// calculate objects intersecting the picking ray
+	const intersects = raycaster.intersectObjects( allObjects );
+
+	for (const intersect of intersects ) {
+
+		intersect.object.material.color.set( "#b3ecff" );
+
+	}
+
+    
+
     const elapsedTime = clock.getElapsedTime()
 
     // Update controls
@@ -417,14 +418,7 @@ const tick = () =>
     moonObj.rotation.y += 0.0015;
     moonObj.rotation.x += 0.00003;
 
-    //displaceTexture
-    //sunTexture.offset.x = (Math.cos(elapsedTime)) / 700
-    // if (sunTexture.offset > -0.15) {
-    //     sunTexture.offset.y += elapsedTime / 1000;
-    // } else {
-    //     sunTexture.offset.y -= elapsedTime / 1000;
-    // }
-
+    //animate texture
     if (sunTexture.offset.y > 0.008) 
     {
         positive = false
@@ -439,12 +433,12 @@ const tick = () =>
         sunTexture.offset.y -= 0.00001;
     
 
-
     sun.scale.y += Math.cos(elapsedTime) / 1000
 
     // Render
     renderer.render(scene, camera)
 
+    window.addEventListener( 'pointermove', onPointerMove );
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
