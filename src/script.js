@@ -466,7 +466,7 @@ const tick = () =>
                 info_container.style.opacity = 0;
             }
 
-            intersect.object.material.color.set( "#b3ecff" );
+            intersects[0].object.material.color.set( "#b3ecff" );
 
         }   else {
             info_container.style.opacity = 0;
@@ -479,16 +479,17 @@ const tick = () =>
     
 
     const elapsedTime = clock.getElapsedTime()
+    console.log(elapsedTime)
 
     // Update controls
     // controls.update()
 
     //rotate 
-    earth.rotation.y += 0.0025
-    mars.rotation.y += 0.0027
-    jupiter.rotation.y += 0.0005
-    moonObj.rotation.y += 0.0015;
-    moonObj.rotation.x += 0.00003;
+    earth.rotation.y = elapsedTime * 0.2;
+    mars.rotation.y = elapsedTime * 0.25;
+    jupiter.rotation.y = elapsedTime * 0.09
+    moonObj.rotation.y = elapsedTime * 0.15
+    
 
     //animate texture
     if (sunTexture.offset.y > 0.008) 
