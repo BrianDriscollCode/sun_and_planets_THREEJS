@@ -16,14 +16,13 @@ The background is a large plane object with a texture.
 
 A directional light has been place to simulate day/night cycles on the planets.
 
-
-# Install dependencies (only the first time)
+## Install dependencies (only the first time)
 npm install
 
-# Run the local server at localhost:8080
+## Run the local server at localhost:8080
 npm run dev
 
-# Build for production in the dist/ directory
+## Build for production in the dist/ directory
 npm run build
 ``` dist folder renamed to public for deployment ```
 
